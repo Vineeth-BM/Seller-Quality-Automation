@@ -1,7 +1,7 @@
 /*
 JP Seller Quality Monitoring System - Production Query
 ==========================================================================
-This query tracks the most recent JP marketplace seller quality status for the PREVIOUS WEEK,
+This query tracks the most recent Japan seller quality status for the PREVIOUS WEEK,
 calculates streak lengths based on weekly data, and determines appropriate email actions.
 
 The query uses:
