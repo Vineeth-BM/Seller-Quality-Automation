@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最終警告: 品質問題の改善が必要です</title>
+    <style>
+        body {
+            font-family: 'Meiryo', 'Hiragino Sans', 'MS PGothic', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #cc0000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .warning-header {
+            color: #cc0000;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .info-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #cc0000;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .info-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 150px;
+        }
+        .value {
+            display: inline-block;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666666;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+        .critical {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .alerting {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        .highlight-box {
+            background-color: #ffeded;
+            border: 2px solid #cc0000;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .notice {
+            background-color: #ffeded;
+            border: 1px solid #cc0000;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .action-steps {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .action-steps h4 {
+            margin-top: 0;
+            color: #cc0000;
+        }
+        .quality-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .quality-table th {
+            background-color: #cc0000;
+            color: white;
+            text-align: left;
+            padding: 8px;
+        }
+        .quality-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .quality-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .warning-counter {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 10px;
+            margin: 15px 0;
+            background-color: #ffeded;
+            border-radius: 5px;
+        }
+        @media only screen and (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .label {
+                display: block;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="warning-header">⚠️ 最終警告: 品質問題の改善が必要です</h2>
+        <h4><?= sellerName ?>様</h4>
+    </div>
+    
+    <div class="highlight-box">
+        <p><strong>重要なお知らせ:</strong> これは最終警告です。継続的な品質問題が検出されており、速やかな対応が必要です。問題が解決されない場合、次のステップとしてアカウントの一時停止措置が取られる可能性があります。</p>
+    </div>
+    
+    <p>週次品質チェックにより、お客様のアカウントに継続的な品質問題が確認されました。この問題は<?= consecutiveDefectiveWeeks > consecutiveAppearanceWeeks ? consecutiveDefectiveWeeks : consecutiveAppearanceWeeks ?>週間連続で検出されています。</p>
+    
+    <div class="warning-counter">
+        <strong>警告回数: 4/5</strong> (5回目で一時停止措置)
+    </div>
+    
+    <div class="info-section">
+        <h4>販売者情報:</h4>
+        <ul class="info-list">
+            <li><span class="label">販売者ID:</span> <span class="value"><?= sellerId ?></span></li>
+            <li><span class="label">販売者名:</span> <span class="value"><?= sellerName ?></span></li>
+            <li><span class="label">データ期間:</span> <span class="value"><?= timePeriod ?></span></li>
+        </ul>
+    </div>
+    
+    <? if (hasDefectiveIssue && hasAppearanceIssue) { ?>
+    <!-- Both defective and appearance issues -->
+    <div class="notice">
+        <h4>複数の継続的な品質問題が検出されています</h4>
+        <p>最近の注文において、製品の欠陥問題と外観品質の問題の両方が継続的に検出されています。至急対処が必要です。</p>
+    </div>
+    
+    <table class="quality-table">
+        <tr>
+            <th>問題タイプ</th>
+            <th>現在の割合</th>
+            <th>ステータス</th>
+            <th>継続週数</th>
+        </tr>
+        <tr>
+            <td>30日間の欠陥率</td>
+            <td><?= defectiveRateFormatted ?></td>
+            <td class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveLabel ?></td>
+            <td><?= consecutiveDefectiveWeeks ?>週間</td>
+        </tr>
+        <tr>
+            <td>外観問題率</td>
+            <td><?= appearanceRateFormatted ?></td>
+            <td class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceLabel ?></td>
+            <td><?= consecutiveAppearanceWeeks ?>週間</td>
+        </tr>
+    </table>
+    <? } else if (hasDefectiveIssue) { ?>
+    <!-- Only defective issues -->
+    <div class="notice">
+        <h4>継続的な製品欠陥の問題が検出されています</h4>
+        <p>最近の注文における欠陥製品の割合は <span class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveRateFormatted ?> (<?= defectiveLabel ?>)</span> です。</p>
+        <p>この問題は<strong><?= consecutiveDefectiveWeeks ?>週間</strong>連続で検出されており、至急対応が必要です。</p>
+    </div>
+    <? } else if (hasAppearanceIssue) { ?>
+    <!-- Only appearance issues -->
+    <div class="notice">
+        <h4>継続的な製品外観の問題が検出されています</h4>
+        <p>最近の注文における外観問題の割合は <span class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceRateFormatted ?> (<?= appearanceLabel ?>)</span> です。</p>
+        <p>この問題は<strong><?= consecutiveAppearanceWeeks ?>週間</strong>連続で検出されており、至急対応が必要です。</p>
+    </div>
+    <? } ?>
+    
+    <div class="action-steps">
+        <h4>至急必要なアクション:</h4>
+        <ol>
+            <? if (hasDefectiveIssue) { ?>
+            <li><strong>緊急品質レビューを実施してください</strong> - すべての製品出荷前の徹底的な機能テストを実施してください。</li>
+            <li><strong>問題のある在庫を特定し隔離してください</strong> - 特定のバッチや製品ラインに潜在的な欠陥がないか確認し、問題が解決するまで出荷を停止してください。</li>
+            <? } ?>
+            
+            <? if (hasAppearanceIssue) { ?>
+            <li><strong>製品の外観品質管理プロセスを改善してください</strong> - 包装と取り扱いのプロトコルを見直してください。</li>
+            <li><strong>外観評価基準を修正してください</strong> - 製品の外観状態が常に正確に評価されるようにしてください。</li>
+            <? } ?>
+            
+            <li><strong>詳細な改善計画を提出してください</strong> - 2営業日以内に、問題解決のための詳細な計画と予想されるタイムラインをお知らせください。</li>
+            <li><strong>次回の品質レビューまでに改善が見られない場合、アカウントは一時停止される可能性があります</strong></li>
+        </ol>
+    </div>
+    
+    <p>私たちは、この問題を解決し、品質基準を満たすようサポートいたします。ただし、継続的な品質問題は当社のマーケットプレイスの信頼性に影響を及ぼすため、迅速な改善が必要です。</p>
+    
+    <div class="info-section">
+        <h4>品質基準:</h4>
+        <ul class="info-list">
+            <li><span class="label">欠陥率 (Critical):</span> <span class="value"><?= thresholds.defectiveCritical ?> 以上</span></li>
+            <li><span class="label">欠陥率 (Alerting):</span> <span class="value"><?= thresholds.defectiveAlerting ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Critical):</span> <span class="value"><?= thresholds.appearanceCritical ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Alerting):</span> <span class="value"><?= thresholds.appearanceAlerting ?> 以上</span></li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>このメールは自動送信されていますが、この問題は品質チームによる優先レビューの対象となっています。</p>
+        <p>ご質問がある場合は、Back Market品質チームまで直接ご連絡ください。</p>
+        <h5>よろしくお願いいたします。<br>Back Market品質チーム</h5>
+    </div>
+</body>
+</html>
