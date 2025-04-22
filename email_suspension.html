@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アカウント一時停止通知: 継続的な品質問題</title>
+    <style>
+        body {
+            font-family: 'Meiryo', 'Hiragino Sans', 'MS PGothic', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .suspension-header {
+            color: #000000;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .info-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #000000;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .info-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 150px;
+        }
+        .value {
+            display: inline-block;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666666;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+        .critical {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .alerting {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        .suspension-box {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+        .notice {
+            background-color: #f2f2f2;
+            border: 1px solid #000000;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .action-steps {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .action-steps h4 {
+            margin-top: 0;
+            color: #000000;
+        }
+        .quality-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .quality-table th {
+            background-color: #000000;
+            color: white;
+            text-align: left;
+            padding: 8px;
+        }
+        .quality-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .quality-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .dates-box {
+            background-color: #f2f2f2;
+            border: 1px solid #000000;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .dates-box h4 {
+            margin-top: 0;
+            color: #000000;
+        }
+        @media only screen and (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .label {
+                display: block;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2 class="suspension-header"> アカウント一時停止通知: 継続的な品質問題</h2>
+        <h4><?= sellerName ?>様</h4>
+    </div>
+    
+    <p>Back Market品質チームからの重要なお知らせです。週次品質モニタリングにより、お客様のアカウントに<strong><?= consecutiveDefectiveWeeks > consecutiveAppearanceWeeks ? consecutiveDefectiveWeeks : consecutiveAppearanceWeeks ?>週間連続</strong>で品質基準を満たさない問題が確認されました。これまでの警告にもかかわらず、改善が見られないため、アカウントの一時停止処理を開始します。</p>
+    
+    <div class="info-section">
+        <h4>販売者情報:</h4>
+        <ul class="info-list">
+            <li><span class="label">販売者ID:</span> <span class="value"><?= sellerId ?></span></li>
+            <li><span class="label">販売者名:</span> <span class="value"><?= sellerName ?></span></li>
+            <li><span class="label">データ期間:</span> <span class="value"><?= timePeriod ?></span></li>
+        </ul>
+    </div>
+    
+    <div class="dates-box">
+        <h4>重要な日程:</h4>
+        <ul class="info-list">
+            <li><span class="label">一時停止予定日:</span> <span class="value"><?= formatDate(new Date(new Date().getTime() + 2*24*60*60*1000)) ?></span></li>
+            <li><span class="label">アピール期限:</span> <span class="value"><?= formatDate(new Date(new Date().getTime() + 5*24*60*60*1000)) ?></span></li>
+        </ul>
+    </div>
+    
+    <? if (hasDefectiveIssue && hasAppearanceIssue) { ?>
+    <!-- Both defective and appearance issues -->
+    <div class="notice">
+        <h4>複数の継続的な品質問題が検出されています</h4>
+        <p>製品の欠陥問題と外観品質の問題の両方が継続的に検出されており、Back Market品質基準を大幅に超えています。</p>
+    </div>
+    
+    <table class="quality-table">
+        <tr>
+            <th>問題タイプ</th>
+            <th>現在の割合</th>
+            <th>ステータス</th>
+            <th>継続週数</th>
+        </tr>
+        <tr>
+            <td>30日間の欠陥率</td>
+            <td><?= defectiveRateFormatted ?></td>
+            <td class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveLabel ?></td>
+            <td><?= consecutiveDefectiveWeeks ?>週間</td>
+        </tr>
+        <tr>
+            <td>外観問題率</td>
+            <td><?= appearanceRateFormatted ?></td>
+            <td class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceLabel ?></td>
+            <td><?= consecutiveAppearanceWeeks ?>週間</td>
+        </tr>
+    </table>
+    <? } else if (hasDefectiveIssue) { ?>
+    <!-- Only defective issues -->
+    <div class="notice">
+        <h4>継続的な製品欠陥の問題が検出されています</h4>
+        <p>最近の注文における欠陥製品の割合は <span class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveRateFormatted ?> (<?= defectiveLabel ?>)</span> です。</p>
+        <p>この問題は<strong><?= consecutiveDefectiveWeeks ?>週間</strong>連続で検出されており、Back Market品質基準を大幅に超えています。</p>
+    </div>
+    <? } else if (hasAppearanceIssue) { ?>
+    <!-- Only appearance issues -->
+    <div class="notice">
+        <h4>継続的な製品外観の問題が検出されています</h4>
+        <p>最近の注文における外観問題の割合は <span class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceRateFormatted ?> (<?= appearanceLabel ?>)</span> です。</p>
+        <p>この問題は<strong><?= consecutiveAppearanceWeeks ?>週間</strong>連続で検出されており、Back Market品質基準を大幅に超えています。</p>
+    </div>
+    <? } ?>
+    
+    <div class="action-steps">
+        <h4>アカウント一時停止を回避するためのステップ:</h4>
+        <ol>
+            <li><strong>即時対応計画の提出</strong> - 24時間以内に、問題解決のための具体的かつ包括的な改善計画を提出してください。</li>
+            <li><strong>品質保証プロセスの徹底的な見直し</strong> - 全製品ラインの品質管理プロセスを徹底的に見直し、文書化してください。</li>
+            <li><strong>問題のある在庫の特定と隔離</strong> - 欠陥のある可能性のある在庫をすべて特定し、隔離してください。</li>
+            <li><strong>品質改善の実施タイムライン</strong> - 具体的なタイムラインと測定可能な目標を含む改善計画を提出してください。</li>
+            <li><strong>品質監査の実施同意</strong> - Back Market品質チームによる監査を受け入れる同意書を提出してください。</li>
+        </ol>
+    </div>
+    
+    <p>アカウント一時停止を回避するには、<strong>48時間以内</strong>に上記の対応が必要です。ご提出いただいた改善計画は品質チームによって審査され、十分と判断された場合のみ一時停止が保留されます。</p>
+    
+    <p>一時停止が実施された場合、最低30日間はアカウントが停止状態となり、品質改善が証明されるまで再開されません。</p>
+    
+    <div class="info-section">
+        <h4>品質基準:</h4>
+        <ul class="info-list">
+            <li><span class="label">欠陥率 (Critical):</span> <span class="value"><?= thresholds.defectiveCritical ?> 以上</span></li>
+            <li><span class="label">欠陥率 (Alerting):</span> <span class="value"><?= thresholds.defectiveAlerting ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Critical):</span> <span class="value"><?= thresholds.appearanceCritical ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Alerting):</span> <span class="value"><?= thresholds.appearanceAlerting ?> 以上</span></li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>このメールは自動送信されていますが、このケースは現在Back Market品質チームによる直接レビューの対象となっています。</p>
+        <p>この通知に関するご質問は、直ちにBack Market品質チームまでご連絡ください。</p>
+        <h5>Back Market品質チーム</h5>
+    </div>
+</body>
+</html>
+    <div class="suspension-box">
+        <p><strong>重要なお知らせ: アカウント一時停止処理開始</strong><br>
+        継続的な品質問題により、48時間以内にアカウントが一時停止されます</p>
