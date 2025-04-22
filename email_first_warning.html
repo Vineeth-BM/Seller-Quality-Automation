@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>品質に関する重要なお知らせ</title>
+    <style>
+        body {
+            font-family: 'Meiryo', 'Hiragino Sans', 'MS PGothic', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            border-bottom: 2px solid #0076c0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .info-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #0076c0;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .info-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .info-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            min-width: 150px;
+        }
+        .value {
+            display: inline-block;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666666;
+            border-top: 1px solid #f0f0f0;
+            padding-top: 15px;
+        }
+        .critical {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .alerting {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        .notice {
+            background-color: #f0f7ff;
+            border: 1px solid #0076c0;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        .action-steps {
+            background-color: #f5f5f5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .action-steps h4 {
+            margin-top: 0;
+        }
+        .quality-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .quality-table th {
+            background-color: #0076c0;
+            color: white;
+            text-align: left;
+            padding: 8px;
+        }
+        .quality-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .quality-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        @media only screen and (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .label {
+                display: block;
+                margin-bottom: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>品質パフォーマンスアラート</h2>
+        <h4><?= sellerName ?>様</h4>
+    </div>
+    
+    <p>週次品質チェックにより、お客様のアカウントに品質問題が確認されました。これらの問題は、販売者のパフォーマンス指標や顧客満足度に影響を及ぼす可能性があります。</p>
+    
+    <div class="info-section">
+        <h4>販売者情報:</h4>
+        <ul class="info-list">
+            <li><span class="label">販売者ID:</span> <span class="value"><?= sellerId ?></span></li>
+            <li><span class="label">販売者名:</span> <span class="value"><?= sellerName ?></span></li>
+            <li><span class="label">データ期間:</span> <span class="value"><?= timePeriod ?></span></li>
+        </ul>
+    </div>
+    
+    <? if (hasDefectiveIssue && hasAppearanceIssue) { ?>
+    <!-- Both defective and appearance issues -->
+    <div class="notice">
+        <h4>複数の品質問題が検出されました</h4>
+        <p>最近の注文において、製品の欠陥問題と外観品質の問題の両方が検出されました。対処が必要です。</p>
+    </div>
+    
+    <table class="quality-table">
+        <tr>
+            <th>問題タイプ</th>
+            <th>現在の割合</th>
+            <th>ステータス</th>
+        </tr>
+        <tr>
+            <td>30日間の欠陥率</td>
+            <td><?= defectiveRateFormatted ?></td>
+            <td class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveLabel ?></td>
+        </tr>
+        <tr>
+            <td>外観問題率</td>
+            <td><?= appearanceRateFormatted ?></td>
+            <td class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceLabel ?></td>
+        </tr>
+    </table>
+    <? } else if (hasDefectiveIssue) { ?>
+    <!-- Only defective issues -->
+    <div class="notice">
+        <h4>製品欠陥の問題が検出されました</h4>
+        <p>最近の注文における欠陥製品の割合は <span class="<?= defectiveLabel.toLowerCase() ?>"><?= defectiveRateFormatted ?> (<?= defectiveLabel ?>)</span> です。</p>
+        <p>これは当社の品質基準を上回っており、対応が必要です。</p>
+    </div>
+    <? } else if (hasAppearanceIssue) { ?>
+    <!-- Only appearance issues -->
+    <div class="notice">
+        <h4>製品外観の問題が検出されました</h4>
+        <p>最近の注文における外観問題の割合は <span class="<?= appearanceLabel.toLowerCase() ?>"><?= appearanceRateFormatted ?> (<?= appearanceLabel ?>)</span> です。</p>
+        <p>これは当社の品質基準を上回っており、対応が必要です。</p>
+    </div>
+    <? } ?>
+    
+    <div class="action-steps">
+        <h4>必要なアクション:</h4>
+        <ol>
+            <? if (hasDefectiveIssue) { ?>
+            <li><strong>品質管理プロセスを見直してください</strong> - 製品出荷前の機能テストを強化してください。</li>
+            <li><strong>在庫をチェックしてください</strong> - 特定のバッチや製品ラインに潜在的な欠陥がないか確認してください。</li>
+            <? } ?>
+            
+            <? if (hasAppearanceIssue) { ?>
+            <li><strong>製品のクリーニングと包装プロセスを改善してください</strong> - 商品が優れた外観状態で到着するよう確保してください。</li>
+            <li><strong>製品の説明を見直してください</strong> - 商品の外観状態が正確に表現されているか確認してください。</li>
+            <? } ?>
+            
+            <li><strong>出荷前チェックリストを実施してください</strong> - 発送前にすべての品質面を確認するようにしてください。</li>
+            <li><strong>このアラートに応答してください</strong> - 5営業日以内に改善計画をお知らせください。</li>
+        </ol>
+    </div>
+    
+    <p>私たちは、あなたの品質指標の改善を支援することに専念しています。改善計画の策定にサポートが必要な場合は、Back Marketの担当者までご連絡ください。</p>
+    
+    <p>品質問題に迅速に対処されない場合、販売者アカウントに一時的な制限が設けられる可能性があります。</p>
+    
+    <div class="info-section">
+        <h4>品質基準:</h4>
+        <ul class="info-list">
+            <li><span class="label">欠陥率 (Critical):</span> <span class="value"><?= thresholds.defectiveCritical ?> 以上</span></li>
+            <li><span class="label">欠陥率 (Alerting):</span> <span class="value"><?= thresholds.defectiveAlerting ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Critical):</span> <span class="value"><?= thresholds.appearanceCritical ?> 以上</span></li>
+            <li><span class="label">外観問題率 (Alerting):</span> <span class="value"><?= thresholds.appearanceAlerting ?> 以上</span></li>
+        </ul>
+    </div>
+    
+    <div class="footer">
+        <p>このメールは自動送信されています。直接返信しないでください。</p>
+        <p>ご質問がある場合は、Back Market品質チームまでご連絡ください。</p>
+        <h5>よろしくお願いいたします。<br>Back Market品質チーム</h5>
+    </div>
+</body>
+</html>
